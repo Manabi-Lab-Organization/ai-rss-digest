@@ -1,0 +1,46 @@
+name: docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  compose-up:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: .env を作る（検証用の値）
+        run: |
+          {
+            echo "APP_URL=http://localhost:3000"
+            echo "SESSION_SECRET=$(openssl rand -hex 32)"
+            echo "POSTGRES_PASSWORD=ci-test-password"
+            echo "INITIAL_ADMIN_EMAIL=admin@example.com"
+            echo "ANTHROPIC_API_KEY=ci-dummy"
+          } > .env
+
+      - name: 立ち上げる
+        run: docker compose up -d --build
+
+      - name: 応答を確かめる
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/api/site-config > info.json; then break; fi
+            sleep 3
+          done
+          cat info.json
+          grep -q '"appName":"AI RSS Digest"' info.json
+          curl -fsS http://localhost:3000/api/features
+          curl -fsS http://localhost:3000/api/auth/signup-status | grep -q first_admin
+          curl -fsS http://localhost:3000/login | grep -qi "<html"
+
+      - name: ログ（失敗したとき）
+        if: failure()
+        run: docker compose logs app

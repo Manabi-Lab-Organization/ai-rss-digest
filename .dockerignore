@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+docs
+.git
+.github
+.env
+.env.*
+!.env.example

@@ -1,0 +1,34 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 依存を入れる
+        run: npm ci
+
+      - name: 型を確かめる（サーバ）
+        run: npx tsc --noEmit -p server
+
+      - name: テスト（サーバ）
+        run: npm test --workspace=server
+
+      - name: 画面を作る
+        run: npm run build --workspace=client

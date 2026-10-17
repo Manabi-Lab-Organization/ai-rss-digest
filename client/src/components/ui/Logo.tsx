@@ -1,0 +1,30 @@
+import { PRODUCT_NAME } from 'shared';
+
+interface LogoProps {
+  className?: string;
+}
+
+export function LogoIcon({ className = 'h-6 w-6' }: LogoProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      role="img"
+      aria-label={PRODUCT_NAME}
+      className={className}
+    >
+      <rect width="100" height="100" rx="22" fill="#0E6E5C" />
+      <path d="M64 34h8a4 4 0 0 1 4 4v34a6 6 0 0 1-6 6H64z" fill="#BFE6DA" />
+      <rect x="22" y="30" width="46" height="48" rx="4" fill="#FFFFFF" />
+      <rect x="29" y="38" width="32" height="7" rx="2" fill="#0E6E5C" />
+      <rect x="29" y="51" width="32" height="4" rx="2" fill="#0E6E5C" opacity="0.55" />
+      <rect x="29" y="59" width="24" height="4" rx="2" fill="#0E6E5C" opacity="0.55" />
+      <rect x="29" y="67" width="28" height="4" rx="2" fill="#0E6E5C" opacity="0.55" />
+      <g stroke="#F4B942" strokeWidth="4.5" strokeLinecap="round">
+        <path d="M70 21l3-8" />
+        <path d="M77 26l7-6" />
+        <path d="M80 33l9-1" />
+      </g>
+    </svg>
+  );
+}
